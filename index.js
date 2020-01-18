@@ -8,18 +8,23 @@ const fetchData = async (searchTerm) => {
     console.log (response.data);
 };
 
-let timeoutId;
+
 const input = document.querySelector('input');
 
-onInput = event => {
-    if (timeoutId) {
+const debounce = (func, delay = 1000) => {
+    let timeoutId;
+    return (...args) => { 
+        if (timeoutId) {
         clearTimeout (timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+            func.apply(null, args);
+        }, delay);
     }
-    timeoutId = setTimeout(() => {
-        fetchData(event.target.value)
-    }, 500);
 }
-input.addEventListener("input", onInput);
+onInput = event => {
+    fetchData(event.target.value)
+}
+input.addEventListener("input", debounce(onInput, 500));
 
-//fetchData();
 
